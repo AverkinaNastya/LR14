@@ -11,7 +11,7 @@ namespace LR14
     {
         public string name;
         public Excel.Worksheet Tablich;
-        public void ChtenieInfo(System.Windows.Forms.DataGridView data, System.Windows.Forms.DataVisualization.Charting.Chart StolbInfo)
+        public void ChtenieInfo(System.Windows.Forms.DataGridView data)
         {
                 Excel.Application ObjWorkExcel = new Excel.Application();
                 Excel.Workbook ObjWorkBook = ObjWorkExcel.Workbooks.Open("C:/Users/Administrator/Documents/системное программирование/ЛР14/LR14/sheet.xlsx");
@@ -23,7 +23,16 @@ namespace LR14
                 for (int i = 0; i < 10; i++)
                     for (int j = 0; j < 10; j++)
                         data.Rows[i].Cells[j].Value = Tablich.Cells[i + 1, j + 1].Text.ToString();
-                StolbInfo.DataSource = data;
+                for (int i = 0; i < 10; i++)
+                {
+                    for (int j = 0; j < 10; j++)
+                    {
+                        if (Convert.ToInt32(data.Rows[i].Cells[j].Value) > 9)
+                            data.Rows[i].Cells[j].Value = Convert.ToInt32(data.Rows[i].Cells[j].Value) % 10;
+                        if (Convert.ToInt32(data.Rows[i].Cells[j].Value) < 0)
+                            data.Rows[i].Cells[j].Value = -Convert.ToInt32(data.Rows[i].Cells[j].Value) % 10;
+                    }
+                }
             }
             finally
             {
@@ -31,9 +40,22 @@ namespace LR14
                 ObjWorkExcel.Quit();
             }
         }
-        public void ZapisInfo()
-        { 
-
+        public void ZapisInfo(System.Windows.Forms.DataGridView data)
+        {
+            Excel.Application ObjWorkExcel = new Excel.Application();
+            Excel.Workbook ObjWorkBook = ObjWorkExcel.Workbooks.Open("C:/Users/Administrator/Documents/системное программирование/ЛР14/LR14/sheet.xlsx");
+            try
+            {
+                Tablich = (Excel.Worksheet)ObjWorkBook.Sheets[1];
+                for (int i = 0; i < 10; i++)
+                    for (int j = 0; j < 10; j++)
+                        Tablich.Cells[i + 1, j + 1].Value = data.Rows[i].Cells[j].Value;
+            }
+            finally
+            {
+                ObjWorkBook.Save();
+                ObjWorkExcel.Quit();
+            }
         }
 
     }
